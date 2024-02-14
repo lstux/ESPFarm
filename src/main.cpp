@@ -148,6 +148,7 @@ void setup() {
 
   /*** U8G2 LCD Screen setup ***/
   u8g2 = new U8G2_SH1106_128X64_NONAME_1_HW_I2C(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+  u8g2->setI2CAddress(2*I2C_ADDR_U8G2);
   if (u8g2->begin()) { Serial.println(F("U8g2 screen initialized")); }
   else { Serial.println(F("Error : U8g2 screen initialization failed")); free(u8g2); u8g2 = nullptr; }
 
