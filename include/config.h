@@ -15,7 +15,7 @@
 
 
 #define SPI_SD_CS_PIN 5
-#define SD_SENSORS_CSVFILE "/ESPFarm.csv"
+#define SD_SENSORS_CSVFILE "/esplogs.csv"
 
 #define I2C_SDA_PIN      6
 #define I2C_SCL_PIN      7
@@ -24,7 +24,7 @@
 #define I2C_ADDR_ADS1115 0x48
 #define I2C_ADDR_DS3231  0x68 // For reference only, can't be changed in RTClib
 
-#define SENSORS_TEMPERATURE_OFFSET -2
+#define SENSORS_TEMPERATURE_OFFSET -2.5
 #define SENSORS_PRESSURE_OFFSET     0
 #define SENSORS_HUMIDITY_OFFSET     0
 #define SENSORS_LIGHT_OFFSET        0
