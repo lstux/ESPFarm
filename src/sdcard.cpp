@@ -70,16 +70,3 @@ bool sd_setup() {
   SD_initialized = true;
   return true;
 }
-
-bool sd_loadconf(const char *path="/espconfig.txt") {
-  if (!SD.exists(path)) return false;
-  File cfile;
-  if (!(cfile = SD.open(path))) {
-    Serial.print(F("Error : failed to open SD file "));
-    Serial.println(path);
-    return false;
-  }
-
-  cfile.close();
-  return true;
-}

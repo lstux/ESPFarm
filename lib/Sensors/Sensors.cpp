@@ -3,8 +3,8 @@
 #include <RTClib.h>
 extern RTC_DS3231 *ds3231;
 
-SensorsRecord::SensorsRecord() {
-  this->ts = 0;
+SensorsRecord::SensorsRecord(uint32_t timestamp) {
+  this->ts = timestamp;
   return;
 }
 SensorsRecord::SensorsRecord(uint32_t timestamp, float temperatureC, float pressurePa, float humidityPct, int16_t adc0, int16_t adc1, int16_t adc2, int16_t adc3) {
@@ -116,8 +116,26 @@ uint8_t Sensors::update() {
     for (uint8_t c=0; c<4; c++) adc_values[c] = ads1115->readADC(c);
     errors += 4;
   }
+  Serial.println(F("Raw sensors readings :"));
+  Serial.print(F("  BME280 (float) : T=")); Serial.print(temperatureC); Serial.print(F(" P=")); Serial.print(pressurePa); Serial.print(F(" H=")); Serial.println(humidityPct);
+  Serial.print(F("  ADS1115 (uint16_t) :")); for (uint8_t i=0; i<4; i++) { Serial.print(F(" Ch")); Serial.print(i); Serial.print("="); Serial.print(adc_values[i]); } Serial.println();
   this->records[this->records_index].setValues(timestamp, temperatureC, pressurePa, humidityPct, adc_values[0], adc_values[1], adc_values[2], adc_values[3]);
   return errors;
+}
+
+SensorsRecord Sensors::read() {
+  uint32_t timestamp = 0;
+  if (ds3231!=nullptr) timestamp = ds3231->now().unixtime();
+  SensorsRecord record(timestamp);
+  if (bme280!=nullptr) {
+    record.setTemperatureC(bme280->readTempC());
+    record.setPressurePa(bme280->readFloatPressure());
+    record.setHumidity(bme280->readFloatHumidity());
+  }
+  if (ads1115!=nullptr) {
+    for (uint8_t c=0; c<4; c++) record.setAdc(c, ads1115->readADC(c));
+  }
+  return record;
 }
 
 SensorsRecord Sensors::lastRecord() {

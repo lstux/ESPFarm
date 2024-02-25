@@ -9,6 +9,9 @@
 #include "sdcard.h"
 extern bool SD_initialized;
 
+#include <ESPWiFi.h>
+ESPWiFi *espwifi;
+
 #include <RTClib.h>
 RTC_DS3231 *ds3231 = nullptr;
 
@@ -82,15 +85,23 @@ void setup() {
   delay(2000);
   Serial.println(F("ESPFarm booting"));
   Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
-  sysinfos();
+
+  espwifi = new ESPWiFi("espwifi", SPI_SD_CS_PIN);
+  espwifi->conf_load();
+  if (espwifi->start()==WL_CONNECTED) {
+    Serial.print("WiFi connected : ");
+    Serial.println(WiFi.localIP());
+  }
+  else {
+    Serial.println("WiFi not connected");
+  }
+  delay(2000);
 
   /*** SD card setup ***/
   sd_setup();
-  sysinfos();
 
   /*** U8G2 LCD Screen setup ***/
   display_setup();
-  sysinfos();
 
   /*** DS3231 RTC setup ***/
   ds3231 = new RTC_DS3231();
@@ -102,14 +113,12 @@ void setup() {
     }
   }
   else { Serial.println(F("Error : DS3231 RTC initialization failed")); free(ds3231); ds3231 = nullptr; }
-  sysinfos();
 
   sensors = new Sensors(SENSORS_RAM_RECORDS, I2C_ADDR_BME280, I2C_ADDR_ADS1115);
   if (!sensors->begin()) {
     Serial.println(F("Warning : Some sensors may be unavailable..."));
     delay(2000);
   }
-  sysinfos();
 
   xTaskCreate(vTaskSensors, /*taskName=*/"vTaskSensors", /*stackDepth=*/10000, /*pvParameters=*/NULL, /*taskPriority=*/1, /*taskHandle=*/NULL);
   xTaskCreate(vTaskDisplay, /*taskName=*/"vTaskDisplay", /*stackDepth=*/10000, /*pvParameters=*/NULL, /*taskPriority=*/1, /*taskHandle=*/NULL);
@@ -117,7 +126,7 @@ void setup() {
 }
 
 void loop() {
-  sysinfos();
-  delay(1000);
+  espwifi->debug();
+  vTaskDelay(pdMS_TO_TICKS(10000));
 }
 

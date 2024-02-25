@@ -37,5 +37,5 @@
 #define LIGHT_MAX     0
 
 #define ADC_MOISTURE_CHANNEL 1
-#define MOISTURE_MIN     0
-#define MOISTURE_MAX     32768
+#define MOISTURE_MIN     32768 //20000
+#define MOISTURE_MAX     0

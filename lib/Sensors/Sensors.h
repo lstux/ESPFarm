@@ -29,7 +29,7 @@ class SensorsRecord {
     uint8_t  humidity    = 255;   //(%)     Relative humidity can be kept as unsigned integer (between 0 and 100), spare 56bits compared to float
     int16_t  adc_channel[4] = { -1, -1, -1, -1 }; //(none) Store light/soil moisture... from ADS1115
   public:
-    SensorsRecord();
+    SensorsRecord(uint32_t timestamp=0);
     SensorsRecord(uint32_t timestamp, float temperatureC, float pressurePa, float humidityPct, int16_t adc0=-1, int16_t adc1=-1, int16_t adc2=-1, int16_t adc3=-1);
 
     void setValues(uint32_t timestamp, float temperatureC, float pressurePa, float humidityPct, int16_t adc0=-1, int16_t adc1=-1, int16_t adc2=-1, int16_t adc3=-1);
@@ -68,6 +68,7 @@ class Sensors {
     bool begin();
 
     uint8_t update();
+    SensorsRecord read();
     SensorsRecord lastRecord();
     SensorsRecord getRecord(uint32_t timestamp);
     SensorsRecord getRecord(uint16_t record_index);
