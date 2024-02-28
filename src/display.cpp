@@ -14,10 +14,14 @@ extern Sensors *sensors;
 
 
 bool display_setup() {
-  //u8g2 = new U8G2_SH1106_128X64_NONAME_1_HW_I2C(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+  pinMode(BUTTON_OK, INPUT_PULLUP);
+  pinMode(BUTTON_UP, INPUT_PULLUP);
+  pinMode(BUTTON_DOWN, INPUT_PULLUP);
+  pinMode(BUTTON_LEFT, INPUT_PULLUP);
+  pinMode(BUTTON_RIGHT, INPUT_PULLUP);
   u8g2 = new U8G2_SSD1306_128X64_NONAME_1_HW_I2C(U8G2_R0,  /* reset=*/ U8X8_PIN_NONE);
   u8g2->setI2CAddress(2*I2C_ADDR_U8G2);
-  if (u8g2->begin()) {
+  if (!u8g2->begin()) {
     Serial.println(F("U8g2 screen initialized"));
     return true;
   }
@@ -25,6 +29,19 @@ bool display_setup() {
   free(u8g2);
   u8g2 = nullptr;
   return false;
+}
+
+void display_bootup(const char *label, uint8_t pct, uint16_t delayms) {
+  u8g2->clear();
+  u8g2->firstPage();
+  do {
+    u8g2->setFont(u8g2_font_ncenB08_tr);
+    u8g2->drawStr(14, 24, label);
+    u8g2->drawRFrame(14, 40, 100, 12, 2);
+    if (pct>0) u8g2->drawRBox(14, 40, pct, 10, 2);
+  } while (u8g2->nextPage());
+  if (delay>0) delay(delayms);
+  return;
 }
 
 

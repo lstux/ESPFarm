@@ -1,0 +1,23 @@
+# Hostname used for mDNS
+hostname=myESP32
+
+# Configure up to 3 WiFi networks
+wifi_ssid1=WiFiNetwork1
+wifi_pass1=WiFiNetwork1P@ss
+
+wifi_ssid2=AnotherAP
+wifi_pass2=With@notherP@$$w0rd
+
+wifi3_ssid=UnprotectedAP
+wifi3_pass=
+
+# Configure Access Point
+ap_ssid=myESP32
+ap_pass=myESP321234
+
+# NTP configuration
+ntp_server=pool.ntp.org
+time_offset=3600
+
+# Remove file once loaded
+remove_loaded=true

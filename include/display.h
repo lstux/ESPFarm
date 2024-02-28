@@ -11,6 +11,7 @@ enum display_mode {
 };
 
 bool display_setup();
+void display_bootup(const char *label="", uint8_t pct=100, uint16_t delayms=0);
 void display_main(enum display_mode mode=DISPLAY_CURRENT);
 
 #endif

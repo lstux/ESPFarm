@@ -53,6 +53,7 @@ class SensorsRecord {
     void        print();
     char       *csvline();
     const char *csvhead();
+    char       *json();
 };
 
 class Sensors {

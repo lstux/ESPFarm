@@ -58,9 +58,16 @@ const char *SensorsRecord::csvhead() {
 }
 
 char *SensorsRecord::csvline() {
-  char *csv = (char *)calloc(1, 128);
+  char *csv = (char *)calloc(128, sizeof(char));
   sprintf(csv, "%d;%.1f;%.1f;%d;%d;%d;%d;%d", this->timestamp(), this->temperatureC(), this->pressurehPa(), this->humidityPct(), this->adc(0), this->adc(1), this->adc(2), this->adc(3));
   return csv;
+}
+
+char *SensorsRecord::json() {
+  char *json = (char *)calloc(256, sizeof(char));
+  sprintf(json, "{\"timestamp\":\"%d\", \"temperature\":\"%.1f\", \"pressure\":\"%.1f\", \"humidity\":\"%d\", \"adc0\":\"%d\", \"adc1\":\"%d\", \"adc2\":\"%d\", \"adc3\":\"%d\"}",
+                this->timestamp(), this->temperatureC(), this->pressurehPa(), this->humidityPct(), this->adc(0), this->adc(1), this->adc(2), this->adc(3));
+  return json;
 }
 
 
@@ -116,9 +123,9 @@ uint8_t Sensors::update() {
     for (uint8_t c=0; c<4; c++) adc_values[c] = ads1115->readADC(c);
     errors += 4;
   }
-  Serial.println(F("Raw sensors readings :"));
+  /*Serial.println(F("Raw sensors readings :"));
   Serial.print(F("  BME280 (float) : T=")); Serial.print(temperatureC); Serial.print(F(" P=")); Serial.print(pressurePa); Serial.print(F(" H=")); Serial.println(humidityPct);
-  Serial.print(F("  ADS1115 (uint16_t) :")); for (uint8_t i=0; i<4; i++) { Serial.print(F(" Ch")); Serial.print(i); Serial.print("="); Serial.print(adc_values[i]); } Serial.println();
+  Serial.print(F("  ADS1115 (uint16_t) :")); for (uint8_t i=0; i<4; i++) { Serial.print(F(" Ch")); Serial.print(i); Serial.print("="); Serial.print(adc_values[i]); } Serial.println();*/
   this->records[this->records_index].setValues(timestamp, temperatureC, pressurePa, humidityPct, adc_values[0], adc_values[1], adc_values[2], adc_values[3]);
   return errors;
 }
